@@ -32,6 +32,8 @@ Vagrant.configure("2") do |config|
     server1.vm.network "private_network", ip: "192.168.25.10", auto_config: false
     # Set the host name of the VM
     server1.vm.hostname = "server1"
+    # Mount the sharedfolder
+    server1.vm.synced_folder ".", "C:/vagrant", type: "virtualbox"
     # VirtualBox specific configuration
     server1.vm.provider "virtualbox" do |vb|
       # VirtualBox Display Name
@@ -43,10 +45,7 @@ Vagrant.configure("2") do |config|
       # 2vCPU
       vb.cpus = "2"
     end
-  # Configure server1
-  config.vm.provision "shell", path: "./Server1/SetupServer1.ps1"
-
-  config.vm.provision :reload 
+    server1.vm.provision "shell", path: "./Server1/SetupServer1.ps1", privileged: true
   end
 
   # Server 2
