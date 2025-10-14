@@ -32,6 +32,8 @@ Vagrant.configure("2") do |config|
     server1.vm.network "private_network", ip: "192.168.25.10", auto_config: false
     # Set the host name of the VM
     server1.vm.hostname = "server1"
+    server1.vm.boot_timeout = 600
+    server1.vm.graceful_halt_timeout = 600
     # Mount the sharedfolder
     server1.vm.synced_folder ".", "C:/vagrant", type: "virtualbox"
     # VirtualBox specific configuration
@@ -45,7 +47,7 @@ Vagrant.configure("2") do |config|
       # 2vCPU
       vb.cpus = "2"
     end
-    server1.vm.provision "shell", path: "./Server1/SetupServer1.ps1", privileged: true
+    # server1.vm.provision "shell", path: "./Server1/SetupServer1.ps1", privileged: true
   end
 
   # Server 2
@@ -61,7 +63,7 @@ Vagrant.configure("2") do |config|
       vb.cpus = "2"
     end
   # Configure server1
-  config.vm.provision "shell", path: "./Server2/SetupServer2.ps1"
+  server2.vm.provision "shell", path: "./Server2/SetupServer2.ps1"
   end
 
   # Client
@@ -76,16 +78,6 @@ Vagrant.configure("2") do |config|
       vb.memory = "2048"
       vb.cpus = "2"
     end
-  # PowerShell provisioning: set AZERTY layout
-  config.vm.provision "shell", inline: <<-SHELL
-    Write-Host "Setting keyboard layout to Belgian (AZERTY)..."
-    $LangList = New-WinUserLanguageList fr-BE
-    Set-WinUserLanguageList $LangList -Force
-    Set-WinSystemLocale fr-BE
-    Set-WinUILanguageOverride fr-BE
-    Write-Host "Keyboard layout set. Restarting..."
-    Restart-Computer -Force
-  SHELL
   end
 
   # Is Hyper-V volledig uitgeschakeld, maar krijg je nog steeds timeouts bij uitrollen van de client?

@@ -1,7 +1,7 @@
 # Setup Server1
 
 # Server1 - Static IP 192.168.25.10 + DHCP Server
-$adapter = Get-NetAdapter | Where-Object {$_.Status -eq 'Up' -and $_.Name -like '*Ethernet*'} | Select-Object -Index 1
+$adapter = Get-NetAdapter -Name "Ethernet 2"
 
 if ($adapter) {
     # Remove existing default gateway
@@ -23,8 +23,8 @@ if ($adapter) {
     # Create DHCP scope
     Add-DhcpServerv4Scope -Name "HostOnlyNetwork" -StartRange 192.168.25.50 -EndRange 192.168.25.150 -SubnetMask 255.255.255.0 -State Active
     
-    # Set DHCP options (Router = 192.168.25.1, DNS = 192.168.25.10)
-    Set-DhcpServerv4OptionValue -DnsServer 192.168.25.10 -Router 192.168.25.1
+    # Set DHCP options (Router = 192.168.25.1)
+    Set-DhcpServerv4OptionValue -Router 192.168.25.1
     
     # Exclude IP range 101-150
     Add-DhcpServerv4ExclusionRange -ScopeId 192.168.25.0 -StartRange 192.168.25.101 -EndRange 192.168.25.150
