@@ -1,11 +1,19 @@
 # Setup Server1
 
+# --- Keyboard layout (Belgian AZERTY) ---
+Write-Host "Setting keyboard layout to Belgian (AZERTY)..."
+$LangList = New-WinUserLanguageList fr-BE
+Set-WinUserLanguageList $LangList -Force
+Set-WinSystemLocale fr-BE
+Set-WinUILanguageOverride fr-BE
+
 # Server1 - Static IP 192.168.25.10 + DHCP Server
 $adapter = Get-NetAdapter -Name "Ethernet 2"
 
 if ($adapter) {
-    # Remove existing default gateway
-    Remove-NetRoute -InterfaceAlias $adapter.Name -DestinationPrefix "0.0.0.0/0" -Confirm:$false -ErrorAction SilentlyContinue
+    # Remove any existing IP configuration first
+    Remove-NetIPAddress -InterfaceAlias $adapter.Name -Confirm:$false -ErrorAction SilentlyContinue
+    Remove-NetRoute -InterfaceAlias $adapter.Name -Confirm:$false -ErrorAction SilentlyContinue
     
     # Set static IP
     New-NetIPAddress -InterfaceAlias $adapter.Name -IPAddress "192.168.25.10" -PrefixLength 24 -DefaultGateway "192.168.25.1"
