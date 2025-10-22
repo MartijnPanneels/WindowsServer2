@@ -8,7 +8,11 @@ Set-WinSystemLocale fr-BE
 Set-WinUILanguageOverride fr-BE
 
 # Server1 - Static IP 192.168.25.10 + DHCP Server
-$adapter = Get-NetAdapter -Name "Ethernet 2"
+$adapter = Get-NetAdapter | Where-Object {
+    $addresses = Get-NetIPAddress -InterfaceIndex $_.InterfaceIndex -ErrorAction SilentlyContinue
+    ($addresses.IPAddress -contains "192.168.25.10") -or 
+    ($_.Status -eq "Up" -and -not ($addresses.IPAddress -like "10.0.*"))
+}
 
 if ($adapter) {
     # Remove any existing IP configuration first
