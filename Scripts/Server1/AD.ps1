@@ -1,6 +1,4 @@
-Install-WindowsFeature AD-Domain-Services
-Install-WindowsFeature DNS -IncludeManagementTools
-
+Install-WindowsFeature AD-Domain-Services 
 # Domein aanmaken 
 write-host "AD configureren en herstarten"
 Import-Module ADDSDeployment
