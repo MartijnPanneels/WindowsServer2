@@ -47,8 +47,8 @@ Vagrant.configure("2") do |config|
       # 2vCPU
       vb.cpus = "2"
     end
-server1.vm.provision "shell", path: "./Server1/NetworkDHCP.ps1", reboot: true
-server1.vm.provision "shell", path: "./Server1/ADConfig.ps1"
+  # server1.vm.provision "shell", path: "./Server1/setup.ps1", privileged: true
+  # server1.vm.provision "shell", path: "./Server1/ADConfig.ps1", privileged: true
   end
   # Server 2
   config.vm.define "server2" do |server2|
