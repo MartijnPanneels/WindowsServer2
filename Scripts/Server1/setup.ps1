@@ -13,26 +13,30 @@ Write-Host "Configuring network."
 
 # Remove existing IP configuration
 Remove-NetIPAddress -InterfaceAlias "Ethernet 2" -Confirm:$false -ErrorAction SilentlyContinue
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet 2" -ResetServerAddresses
 Remove-NetRoute -InterfaceAlias "Ethernet 2" -Confirm:$false -ErrorAction SilentlyContinue
+Write-Host "Deleted ip"
     
 # Set static IP
 New-NetIPAddress -InterfaceAlias "Ethernet 2" -IPAddress "192.168.25.10" -PrefixLength 24 -DefaultGateway "192.168.25.1"
+Write-Host "IP done"
 Set-DnsClientServerAddress -InterfaceAlias "Ethernet 2" -ServerAddresses "192.168.25.10"
+Write-Host "Dns done"
 Write-Host "Network configured: Static IP 192.168.25.10"
-
 
 # --- Domain Controller Promotion ---
 
 Write-Host "Installing AD-Domain-Services feature"
 Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
+Install-WindowsFeature -Name DHCP -IncludeManagementTools
 
-$domainName = "WS2-25-martijn.hogent"
+$DomainName = "WS2-25-martijn.hogent"
 
 Write-Host "Promoting to Domain Controller..."
 Import-Module ADDSDeployment
 
 $securePassword = ConvertTo-SecureString "P@ssw0rd" -AsPlainText -Force
 
-
 Install-ADDSForest -DomainName $DomainName -SafeModeAdministratorPassword $securePassword -InstallDns -Force:$true
 
+Write-Host "Domain Controller done"
