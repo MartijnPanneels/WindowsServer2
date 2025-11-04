@@ -7,15 +7,11 @@ Set-WinUserLanguageList $LangList -Force
 Set-WinSystemLocale fr-BE
 Set-WinUILanguageOverride fr-BE
 
-
-# Instaleren RSAT tools
-
- Add-WindowsCapability -Online -Name     "RSAT:ActiveDirectory"
- Add-WindowsCapability -Online -Name     "RSAT:DNS-Server"
- Add-WindowsCapability -Online -Name     "RSAT:DHCP"
- Add-WindowsCapability -Online -Name     "RSAT:CertificateServicesTools"
-
-
+Write-Host "Installing RSAT tools..."
+Add-WindowsCapability -Online -Name "Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
+Add-WindowsCapability -Online -Name "Rsat.Dns.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
+Add-WindowsCapability -Online -Name "Rsat.DHCP.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
+Add-WindowsCapability -Online -Name "Rsat.CertificateServices.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
 
 $adapter = Get-NetAdapter | Where-Object {
     $addresses = Get-NetIPAddress -InterfaceIndex $_.InterfaceIndex -ErrorAction SilentlyContinue

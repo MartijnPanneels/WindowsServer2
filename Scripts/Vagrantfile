@@ -47,6 +47,8 @@ Vagrant.configure("2") do |config|
       # 2vCPU
       vb.cpus = "2"
     end
+    server1.vm.provision "shell", path: "./Server1/setup.ps1", privileged: true
+
   end
   # Server 2
   config.vm.define "server2" do |server2|
@@ -83,7 +85,7 @@ Vagrant.configure("2") do |config|
       vb.memory = "2048"
       vb.cpus = "2"
     end
-  # client.vm.provision "shell", path: "./Client/Network4Client.ps1", privileged: true
+  client.vm.provision "shell", path: "./Client/setup.ps1", privileged: true
   end
   # Is Hyper-V volledig uitgeschakeld, maar krijg je nog steeds timeouts bij uitrollen van de client?
   # Verwijder dan het #-teken voor de onderstaande regel om de timeout te verhogen - indien nodig kan je de waarde nog aanpassen (default is 300 seconden)
