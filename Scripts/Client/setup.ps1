@@ -30,10 +30,15 @@ if ($adapter) {
     # Set DNS to obtain automatically (or set to server1 if needed)
     Set-DnsClientServerAddress -InterfaceAlias $adapter.Name -ResetServerAddresses
     
+    Set-DnsClient -InterfaceAlias $adapter.Name -RegisterThisConnectionsAddress $false
+     
     Write-Host "Client configured for DHCP"
 }
 
 
 $pw = ConvertTo-SecureString "vagrant" -AsPlainText -Force
+
+Write-Host "Joining the domain"
 Add-Computer -DomainName "WS2-25-martijn.hogent" -Credential (New-Object System.Management.Automation.PSCredential("WS2-25-martijn\Administrator",$pw))
+Write-Host "restarting"
 Restart-Computer -Force

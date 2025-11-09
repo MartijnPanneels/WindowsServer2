@@ -10,33 +10,22 @@ Set-WinUILanguageOverride fr-BE
 # --- Network Configuration ---
 Write-Host "Configuring network."
 
+$adapter = Get-NetAdapter | Where-Object {
+    $addresses = Get-NetIPAddress -InterfaceIndex $_.InterfaceIndex -ErrorAction SilentlyContinue
+    ($_.Status -eq "Up" -and -not ($addresses.IPAddress -like "10.0.*"))
+}
 
 # Remove existing IP configuration
-Remove-NetIPAddress -InterfaceAlias "Ethernet 2" -Confirm:$false -ErrorAction SilentlyContinue
-Set-DnsClientServerAddress -InterfaceAlias "Ethernet 2" -ResetServerAddresses
-Remove-NetRoute -InterfaceAlias "Ethernet 2" -Confirm:$false -ErrorAction SilentlyContinue
+Remove-NetIPAddress -InterfaceAlias $adapter.Name -Confirm:$false -ErrorAction SilentlyContinue
+Set-DnsClientServerAddress -InterfaceAlias $adapter.Name -ResetServerAddresses
+Remove-NetRoute -InterfaceAlias $adapter.Name -Confirm:$false -ErrorAction SilentlyContinue
 Write-Host "Deleted ip"
     
 # Set static IP
-New-NetIPAddress -InterfaceAlias "Ethernet 2" -IPAddress "192.168.25.10" -PrefixLength 24 -DefaultGateway "192.168.25.1"
+New-NetIPAddress -InterfaceAlias $adapter.Name -IPAddress "192.168.25.10" -PrefixLength 24 -DefaultGateway "192.168.25.1"
 Write-Host "IP done"
-Set-DnsClientServerAddress -InterfaceAlias "Ethernet 2" -ServerAddresses "192.168.25.10"
+Set-DnsClientServerAddress -InterfaceAlias $adapter.Name -ServerAddresses @("192.168.25.10", "192.168.25.20")
 Write-Host "Dns done"
 Write-Host "Network configured: Static IP 192.168.25.10"
 
-# --- Domain Controller Promotion ---
-
-Write-Host "Installing AD-Domain-Services feature"
-Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
-Install-WindowsFeature -Name DHCP -IncludeManagementTools
-
-$DomainName = "WS2-25-martijn.hogent"
-
-Write-Host "Promoting to Domain Controller..."
-Import-Module ADDSDeployment
-
-$securePassword = ConvertTo-SecureString "P@ssw0rd" -AsPlainText -Force
-
-Install-ADDSForest -DomainName $DomainName -SafeModeAdministratorPassword $securePassword -InstallDns -Force:$true
-
-Write-Host "Domain Controller done"
+Restart-Computer -Force

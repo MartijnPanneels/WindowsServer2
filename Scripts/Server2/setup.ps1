@@ -8,7 +8,11 @@ Set-WinSystemLocale fr-BE
 Set-WinUILanguageOverride fr-BE
 
 # Server2 - Static IP 192.168.25.20
-$adapter = Get-NetAdapter -Name "Ethernet 2"
+$adapter = Get-NetAdapter | Where-Object {
+    $addresses = Get-NetIPAddress -InterfaceIndex $_.InterfaceIndex -ErrorAction SilentlyContinue
+    ($_.Status -eq "Up" -and -not ($addresses.IPAddress -like "10.0.*"))
+}
+
 
 if ($adapter) {
 Remove-NetIPAddress -InterfaceAlias $adapter.Name -Confirm:$false -ErrorAction SilentlyContinue
