@@ -64,4 +64,6 @@ Invoke-Command -ComputerName "server1.WS2-25-martijn.hogent" -Credential $credad
     Add-DhcpServerInDC -DnsName "server1.WS2-25-martijn.hogent" -IPAddress 192.168.25.10
 }
 
+New-NetFirewallRule -DisplayName "Allow DHCP Server" -Direction Inbound -Protocol UDP -LocalPort 67 -Action Allow
+
 Write-Host "DHCP Server configured successfully!"

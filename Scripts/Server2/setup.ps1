@@ -24,7 +24,9 @@ Set-DnsClientServerAddress -InterfaceAlias $adapter.Name -ServerAddresses "192.1
     Write-Host "Server2 configured: Static IP 192.168.25.20"
 }
 
-$pw = ConvertTo-SecureString "vagrant" -AsPlainText -Force
-Add-Computer -DomainName "WS2-25-martijn.hogent" -Credential (New-Object System.Management.Automation.PSCredential("WS2-25-martijn\Administrator",$pw))
-Restart-Computer -Force
+Start-Sleep -Seconds 20
 
+$DomainName = "WS2-25-martijn.hogent"
+$pw = ConvertTo-SecureString "vagrant" -AsPlainText -Force
+Add-Computer -DomainName $DomainName -Credential (New-Object System.Management.Automation.PSCredential("WS2-25-martijn.hogent\Administrator",$pw))
+Restart-Computer -Force
