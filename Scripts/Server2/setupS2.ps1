@@ -51,4 +51,8 @@ $Credential = New-Object System.Management.Automation.PSCredential("Administrato
 
 Add-Computer -DomainName $Domain -Credential $Credential -Options JoinWithNewName,AccountCreate -Restart:$false -Force
 
-Write-Host "Server2 basic setup and domain join complete. Please run Restart-Computer -Force"
+Write-Host "Server2 basic setup and domain join complete."
+
+Restart-Computer -Force
+
+Write-Host "Server2 is restarting"
