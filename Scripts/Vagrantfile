@@ -34,9 +34,8 @@ Vagrant.configure("2") do |config|
     server1.vm.hostname = "server1"
     server1.vm.boot_timeout = 600
     server1.vm.graceful_halt_timeout = 600
-    # Copy scripts to the VM
+    # Shared folder
     server1.vm.synced_folder ".", "C:/vagrant", type: "virtualbox"
-    server1.vm.provision "file", source: "./Server1", destination: "C:/scripts"
     # VirtualBox specific configuration
     server1.vm.provider "virtualbox" do |vb|
       # VirtualBox Display Name
@@ -48,7 +47,8 @@ Vagrant.configure("2") do |config|
       # 2vCPU
       vb.cpus = "2"
     end
-   server1.vm.provision "shell", path: "./Server1/setup.ps1", privileged: true
+    # Configure server1
+    # server1.vm.provision "shell", path: "./Server1/setupS1.ps1", privileged: true
   end
   # Server 2
   config.vm.define "server2" do |server2|
@@ -59,16 +59,20 @@ Vagrant.configure("2") do |config|
     server2.vm.boot_timeout = 600
     server2.vm.graceful_halt_timeout = 600
     server2.vm.synced_folder ".", "C:/vagrant", type: "virtualbox"
-    server2.vm.provision "file", source: "./Server2", destination: "C:/scripts"
     server2.vm.provider "virtualbox" do |vb|
       vb.name = "server2"
       vb.customize ["modifyvm", :id, "--groups", "/WS2"]
       vb.memory = "3072"
       vb.cpus = "2"
+      vb.customize ["storageattach", :id, 
+                  "--storagectl", "SATA Controller", 
+                  "--port", "1", 
+                  "--device", "0", 
+                  "--type", "dvddrive", 
+                  "--medium", "./ISO/enu_sql_server_2022_standard_edition_x64_dvd_43079f69.iso"]
     end
-  # Configure server1
-  server2.vm.provision "shell", path: "./Server2/setup.ps1", privileged: true
-
+    # Configure server2
+    server2.vm.provision "shell", path: "./Server2/setupS2.ps1", privileged: true
   end
 
   # Client
@@ -80,14 +84,14 @@ Vagrant.configure("2") do |config|
     client.vm.boot_timeout = 600
     client.vm.graceful_halt_timeout = 600
     client.vm.synced_folder ".", "C:/vagrant", type: "virtualbox"
-    client.vm.provision "file", source: "./Client", destination: "C:/scripts"
     client.vm.provider "virtualbox" do |vb|
       vb.name = "client"
       vb.customize ["modifyvm", :id, "--groups", "/WS2"]
       vb.memory = "2048"
       vb.cpus = "2"
     end
-  client.vm.provision "shell", path: "./Client/setup.ps1", privileged: true
+    # Configure client
+  client.vm.provision "shell", path: "./Client/setupC.ps1", privileged: true
   end
   # Is Hyper-V volledig uitgeschakeld, maar krijg je nog steeds timeouts bij uitrollen van de client?
   # Verwijder dan het #-teken voor de onderstaande regel om de timeout te verhogen - indien nodig kan je de waarde nog aanpassen (default is 300 seconden)

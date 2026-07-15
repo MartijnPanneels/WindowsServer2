@@ -1,13 +1,13 @@
 # Setup Client
 
-# --- Keyboard layout (Belgian AZERTY) ---
-Write-Host "Setting keyboard layout to Belgian (AZERTY)..."
+# azeerty keyboard layout
+Write-Host "azerty"
 $LangList = New-WinUserLanguageList fr-BE
 Set-WinUserLanguageList $LangList -Force
 Set-WinSystemLocale fr-BE
 Set-WinUILanguageOverride fr-BE
 
-Write-Host "Installing RSAT tools..."
+# installeren rsat-tools
 Add-WindowsCapability -Online -Name "Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
 Add-WindowsCapability -Online -Name "Rsat.Dns.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
 Add-WindowsCapability -Online -Name "Rsat.DHCP.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
@@ -18,27 +18,22 @@ $adapter = Get-NetAdapter | Where-Object {
     ($_.Status -eq "Up" -and -not ($addresses.IPAddress -like "10.0.*"))
 }
 
-
+# netwerk instellen op DHCP
 if ($adapter) {
-    # Remove any existing IP configuration first
     Remove-NetIPAddress -InterfaceAlias $adapter.Name -Confirm:$false -ErrorAction SilentlyContinue
     Remove-NetRoute -InterfaceAlias $adapter.Name -Confirm:$false -ErrorAction SilentlyContinue
-
-    # Set to obtain IP automatically via DHCP
     Set-NetIPInterface -InterfaceAlias $adapter.Name -Dhcp Enabled
-    
-    # Set DNS to obtain automatically (or set to server1 if needed)
     Set-DnsClientServerAddress -InterfaceAlias $adapter.Name -ResetServerAddresses
-    
     Set-DnsClient -InterfaceAlias $adapter.Name -RegisterThisConnectionsAddress $false
-     
-    Write-Host "Client configured for DHCP"
 }
+# # instaleren ssms
+# $ssms= "https://aka.ms/ssmsfullsetup"
+# $destination = "$env:USERPROFILE\Downloads\SSMS-Setup.exe"
 
+# Invoke-WebRequest -Uri $ssms -OutFile $destination
+# Start-Process -FilePath $destination -ArgumentList "/install /quiet /norestart" -Wait
 
+# toevoegen aan het domain
 $pw = ConvertTo-SecureString "vagrant" -AsPlainText -Force
-
-Write-Host "Joining the domain"
 Add-Computer -DomainName "WS2-25-martijn.hogent" -Credential (New-Object System.Management.Automation.PSCredential("WS2-25-martijn\Administrator",$pw))
-Write-Host "restarting"
 Restart-Computer -Force

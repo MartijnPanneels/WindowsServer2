@@ -1,12 +1,8 @@
-$DomainName = "WS2-25-martijn.hogent"
+# De zonefiles instellen
 
-Write-Host "Configuring Server2 as secondary DNS server..."
+Add-DnsServerSecondaryZone -Name "25.168.192.in-addr.arpa" -MasterServers "192.168.25.10" -ZoneFile "25.168.192.in-addr.arpa.dns"
 
-Install-WindowsFeature -Name DNS -IncludeManagementTools
-
-Import-Module DnsServer
-Add-DnsServerSecondaryZone -Name $DomainName -MasterServers "192.168.25.10" -ZoneFile "$DomainName.dns"
+Add-DnsServerSecondaryZone -Name "WS2-25-martijn.hogent" -MasterServers "192.168.25.10" -ZoneFile "WS2-25-martijn.hogent.dns" 
 
 Start-Service DNS
 
-Write-Host "Server2 is now secondary DNS server for $DomainName"
