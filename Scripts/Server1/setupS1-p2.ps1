@@ -1,7 +1,3 @@
-# ==============================================================================
-# Script: 02-Server1-DHCP-AD.ps1
-# Beschrijving: DHCP inrichten en AD structuur opbouwen
-# ==============================================================================
 
 $Domain = "DC=WS2-25-martijn,DC=hogent"
 $DomainName = "WS2-25-martijn.hogent"
@@ -56,3 +52,27 @@ New-ADUser -Name "User1" -GivenName "User" -Surname "One" -SamAccountName "user1
 New-ADUser -Name "User2" -GivenName "User" -Surname "Two" -SamAccountName "user2" -UserPrincipalName "user2@$DomainName" -Path "OU=HR,$Domain" -AccountPassword $SecurePass -Enabled $true -ErrorAction SilentlyContinue
 
 Write-Host "Active Directory Structure complete."
+
+# ------------------------------------------------------------------------------
+# 3. DNS Reverse Lookup Zone
+# ------------------------------------------------------------------------------
+Write-Host "Configuring DNS Reverse Lookup Zone..."
+$NetworkId = "192.168.25.0/24"
+$ZoneName = "25.168.192.in-addr.arpa"
+
+Add-DnsServerPrimaryZone -NetworkId $NetworkId -ReplicationScope "Domain" -ErrorAction SilentlyContinue
+Add-DnsServerResourceRecordPtr -ZoneName $ZoneName -Name "10" -PtrDomainName "server1.$DomainName" -AllowUpdateAny -ErrorAction SilentlyContinue
+Write-Host "DNS Configuration complete."
+
+# ------------------------------------------------------------------------------
+# 4. Certificate Authority (CA)
+# ------------------------------------------------------------------------------
+Write-Host "Installing Active Directory Certificate Services (CA) & Web Enrollment..."
+
+Install-WindowsFeature AD-Certificate, ADCS-Web-Enrollment -IncludeManagementTools
+
+Install-AdcsCertificationAuthority -CAType EnterpriseRootCa -CACommonName "WS2-25-martijn-CA" -KeyLength 2048 -HashAlgorithmName SHA256 -CryptoProviderName "RSA#Microsoft Software Key Storage Provider" -Force
+Install-AdcsWebEnrollment -Force
+
+Restart-Service certsvc
+Write-Host "Certificate Authority (CA) successfully installed and configured."
