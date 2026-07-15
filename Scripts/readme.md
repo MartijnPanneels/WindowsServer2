@@ -22,4 +22,6 @@ Om te controleren of de server goed is ingesteld kunnen volgende commandos worde
 - Controleer de uitsluitingen voor deze scope: `Get-DhcpServerv4ExclusionRange -ScopeId "192.168.25.0" | Format-Table StartRange, EndRange`
 - Controleer het A-record in de forward lookup zone: `Get-DnsServerResourceRecord -ZoneName "WS2-25-martijn.hogent" -Name "server1" | Format-Table HostName, RecordType, RecordData`
 - Test de Reverse Lookup: `Resolve-DnsName -Name 192.168.25.10 | Format-Table Name, Type, NameHost`
+- Controleer de Forward Lookup Zone: `Get-DnsServerZone -Name "WS2-25-martijn.hogent" | Format-List ZoneName, SecureSecondaries, SecondaryServers`
+- Controleer de Reverse Lookup Zone: `Get-DnsServerZone -Name "25.168.192.in-addr.arpa" | Format-List ZoneName, SecureSecondaries, SecondaryServers`
 - Status van de certificaatservice: `Get-Service certsvc | Format-Table Status, Name, DisplayName`
