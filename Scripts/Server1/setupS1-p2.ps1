@@ -60,8 +60,13 @@ Write-Host "Configuring DNS Reverse Lookup Zone..."
 $NetworkId = "192.168.25.0/24"
 $ZoneName = "25.168.192.in-addr.arpa"
 
+# Reverse Lookup Zone aanmaken en PTR record toevoegen
 Add-DnsServerPrimaryZone -NetworkId $NetworkId -ReplicationScope "Domain" -ErrorAction SilentlyContinue
 Add-DnsServerResourceRecordPtr -ZoneName $ZoneName -Name "10" -PtrDomainName "server1.$DomainName" -AllowUpdateAny -ErrorAction SilentlyContinue
+
+# Zone transfers toestaan voor server2
+Set-DnsServerPrimaryZone -Name $DomainName -SecureSecondaries TransferToSecureServers -SecondaryServers "192.168.25.20" -ErrorAction SilentlyContinue
+Set-DnsServerPrimaryZone -Name $ZoneName -SecureSecondaries TransferToSecureServers -SecondaryServers "192.168.25.20" -ErrorAction SilentlyContinue
 Write-Host "DNS Configuration complete."
 
 # ------------------------------------------------------------------------------
