@@ -37,7 +37,7 @@ New-ADOrganizationalUnit -Name "HR" -Path $Domain -ErrorAction SilentlyContinue
 New-ADOrganizationalUnit -Name "Management" -Path $Domain -ErrorAction SilentlyContinue
 
 # Standaard wachtwoord
-$SecurePass = ConvertTo-SecureString "Student2025!" -AsPlainText -Force
+$SecurePass = ConvertTo-SecureString "Student2025" -AsPlainText -Force
 
 # Twee Domain Admins aanmaken in de IT OU (Opgesplitst voor betrouwbaarheid)
 New-ADUser -Name "Admin1" -GivenName "Admin" -Surname "One" -SamAccountName "admin1" -UserPrincipalName "admin1@$DomainName" -Path "OU=IT,$Domain" -AccountPassword $SecurePass -Enabled $true -ErrorAction SilentlyContinue

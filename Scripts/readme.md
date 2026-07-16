@@ -7,6 +7,7 @@
 1. Start Server1: `vagrant up server1`.
 2. Voer op de VM `C:\vagrant\Server1\setupS1.ps1` uit.
 3. Na dit script is er een reboot vereist. Log na het uitvoeren van het eerste script in met de administrator: `ssh administrator@192.168.25.10` het wachtwoord is `vagrant`
+<!-- 4. Nakijken of dit ook lukt met admin1 -> Student2025! (nog aan te passen) -->
 4. Ga in de powershell env: `powershell`
 5. Navigeer naar `C:\vagrant\Server1\setupS1-p2.ps1` en voer dit script uit.
 
@@ -25,3 +26,15 @@ Om te controleren of de server goed is ingesteld kunnen volgende commandos worde
 - Controleer de Forward Lookup Zone: `Get-DnsServerZone -Name "WS2-25-martijn.hogent" | Format-List ZoneName, SecureSecondaries, SecondaryServers`
 - Controleer de Reverse Lookup Zone: `Get-DnsServerZone -Name "25.168.192.in-addr.arpa" | Format-List ZoneName, SecureSecondaries, SecondaryServers`
 - Status van de certificaatservice: `Get-Service certsvc | Format-Table Status, Name, DisplayName`
+
+### Server 2
+
+1. Start Server1: `vagrant up server2`.
+2. Voer op de VM `C:\vagrant\Server2\setupS2.ps1` uit.
+3. Na dit script is er een reboot vereist. Log na het uitvoeren van het eerste script in met de administrator: `ssh admin1@192.168.25.20` het wachtwoord is `Student2025!`
+4. Voer op de VM `C:\vagrant\Server2\setupS2-p2.ps1` uit.
+5. Controlleer of SQLServer runt: `Get-Service -Name "MSSQLSERVER"`
+
+### Client
+
+WS2-25-martijn\admin1

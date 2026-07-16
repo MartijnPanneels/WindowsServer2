@@ -72,7 +72,7 @@ Vagrant.configure("2") do |config|
                   "--medium", "./ISO/enu_sql_server_2022_standard_edition_x64_dvd_43079f69.iso"]
     end
     # Configure server2
-    server2.vm.provision "shell", path: "./Server2/setupS2.ps1", privileged: true
+    # server2.vm.provision "shell", path: "./Server2/setupS2.ps1", privileged: true
   end
 
   # Client
@@ -91,7 +91,7 @@ Vagrant.configure("2") do |config|
       vb.cpus = "2"
     end
     # Configure client
-  client.vm.provision "shell", path: "./Client/setupC.ps1", privileged: true
+  # client.vm.provision "shell", path: "./Client/setupC.ps1", privileged: true
   end
   # Is Hyper-V volledig uitgeschakeld, maar krijg je nog steeds timeouts bij uitrollen van de client?
   # Verwijder dan het #-teken voor de onderstaande regel om de timeout te verhogen - indien nodig kan je de waarde nog aanpassen (default is 300 seconden)

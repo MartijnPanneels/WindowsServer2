@@ -1,39 +1,38 @@
 # Setup Client
 
-# azeerty keyboard layout
-Write-Host "azerty"
-$LangList = New-WinUserLanguageList fr-BE
-Set-WinUserLanguageList $LangList -Force
-Set-WinSystemLocale fr-BE
-Set-WinUILanguageOverride fr-BE
+Write-Host "Configuring Internal Network Interface..."
+# We zoeken de tweede netwerkkaart (niet de NAT adapter)
+$InternalAdapter = Get-NetAdapter | Where-Object { $_.InterfaceAlias -ne "Ethernet" }
 
-# installeren rsat-tools
-Add-WindowsCapability -Online -Name "Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
-Add-WindowsCapability -Online -Name "Rsat.Dns.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
-Add-WindowsCapability -Online -Name "Rsat.DHCP.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
-Add-WindowsCapability -Online -Name "Rsat.CertificateServices.Tools~~~~0.0.1.0" -ErrorAction SilentlyContinue
+# IP en DNS instellen
+$IPAddress = "192.168.25.30"
+$PrefixLength = 24
+$Gateway = "192.168.25.1" # Optioneel, afhankelijk van je routing vereisten
+$DNSServer = "192.168.25.10"
 
-$adapter = Get-NetAdapter | Where-Object {
-    $addresses = Get-NetIPAddress -InterfaceIndex $_.InterfaceIndex -ErrorAction SilentlyContinue
-    ($_.Status -eq "Up" -and -not ($addresses.IPAddress -like "10.0.*"))
+New-NetIPAddress -InterfaceAlias $InternalAdapter.InterfaceAlias -IPAddress $IPAddress -PrefixLength $PrefixLength -DefaultGateway $Gateway -ErrorAction SilentlyContinue
+Set-DnsClientServerAddress -InterfaceAlias $InternalAdapter.InterfaceAlias -ServerAddresses $DNSServer
+
+Write-Host "Network configuration complete. IP: $IPAddress, DNS: $DNSServer"
+
+# Copy shared folder locally
+$LOCALPATH = "C:\Users\Public\shared_folder"
+
+Write-Output "Copying shared folder to the local path."
+if (!(Test-Path $LOCALPATH)) {
+    New-Item -Path $LOCALPATH -ItemType Directory -Force
+    Write-Output "Local path created at $LOCALPATH."
 }
+Copy-Item -Path "C:\vagrant\*" -Destination $LOCALPATH -Recurse -Force
+Write-Host "Shared folder successfully copied to $LOCALPATH."
 
-# netwerk instellen op DHCP
-if ($adapter) {
-    Remove-NetIPAddress -InterfaceAlias $adapter.Name -Confirm:$false -ErrorAction SilentlyContinue
-    Remove-NetRoute -InterfaceAlias $adapter.Name -Confirm:$false -ErrorAction SilentlyContinue
-    Set-NetIPInterface -InterfaceAlias $adapter.Name -Dhcp Enabled
-    Set-DnsClientServerAddress -InterfaceAlias $adapter.Name -ResetServerAddresses
-    Set-DnsClient -InterfaceAlias $adapter.Name -RegisterThisConnectionsAddress $false
-}
-# # instaleren ssms
-# $ssms= "https://aka.ms/ssmsfullsetup"
-# $destination = "$env:USERPROFILE\Downloads\SSMS-Setup.exe"
+Write-Host "Joining domain WS2-25-martijn.hogent..."
 
-# Invoke-WebRequest -Uri $ssms -OutFile $destination
-# Start-Process -FilePath $destination -ArgumentList "/install /quiet /norestart" -Wait
+$Domain = "WS2-25-martijn.hogent"
+$AdminUser = "WS2-25-martijn\admin1"
+# Gebruik het wachtwoord dat je voor admin1 hebt ingesteld
+$Password = ConvertTo-SecureString "Student2025!" -AsPlainText -Force
+$Credential = New-Object System.Management.Automation.PSCredential($AdminUser, $Password)
 
-# toevoegen aan het domain
-$pw = ConvertTo-SecureString "vagrant" -AsPlainText -Force
-Add-Computer -DomainName "WS2-25-martijn.hogent" -Credential (New-Object System.Management.Automation.PSCredential("WS2-25-martijn\Administrator",$pw))
-Restart-Computer -Force
+# Voeg de client toe aan het domein (herstart automatisch als het succesvol is)
+Add-Computer -DomainName $DOMAIN -Credential $CREDENTIAL -Restart -Force

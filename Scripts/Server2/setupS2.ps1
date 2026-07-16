@@ -43,16 +43,19 @@ New-NetFirewallRule -DisplayName "Allow SSH" -Direction Inbound -Protocol TCP -L
 New-NetFirewallRule -DisplayName "Allow SQL Server" -Direction Inbound -Protocol TCP -LocalPort 1433 -Action Allow
 New-NetFirewallRule -DisplayName "Allow SQL Browser" -Direction Inbound -Protocol UDP -LocalPort 1434 -Action Allow
 
-# Domein Join
-Write-Host "Joining domain WS2-25-martijn.hogent..."
-$Domain = "WS2-25-martijn.hogent"
-$Password = ConvertTo-SecureString "Student2025!" -AsPlainText -Force
-$Credential = New-Object System.Management.Automation.PSCredential("Administrator", $Password)
+Write-Host "Joining domain WS2-25-martijn.hogent met admin1..."
 
+$Domain = "WS2-25-martijn.hogent"
+$AdminUser = "WS2-25-martijn\admin1"
+$Password = ConvertTo-SecureString "Student2025!" -AsPlainText -Force
+
+# Maak de credential object aan
+$Credential = New-Object System.Management.Automation.PSCredential($AdminUser, $Password)
+
+# Voer de join uit
 Add-Computer -DomainName $Domain -Credential $Credential -Options JoinWithNewName,AccountCreate -Restart:$false -Force
 
-Write-Host "Server2 basic setup and domain join complete."
+Write-Host "Server2 domein join is verwerkt."
 
+Write-Host "Restarting computer"
 Restart-Computer -Force
-
-Write-Host "Server2 is restarting"
