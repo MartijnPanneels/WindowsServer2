@@ -32,8 +32,9 @@ Om te controleren of de server goed is ingesteld kunnen volgende commandos worde
 1. Start Server1: `vagrant up server2`.
 2. Voer op de VM `C:\vagrant\Server2\setupS2.ps1` uit.
 3. Na dit script is er een reboot vereist. Log na het uitvoeren van het eerste script in met de administrator: `ssh admin1@192.168.25.20` het wachtwoord is `Student2025!`
-4. Voer op de VM `C:\vagrant\Server2\setupS2-p2.ps1` uit.
-5. Controlleer of SQLServer runt: `Get-Service -Name "MSSQLSERVER"`
+4. Ga in de powershell env: `powershell`
+5. Voer op de VM `C:\vagrant\Server2\setupS2-p2.ps1` uit.
+6. Controlleer of SQLServer runt: `Get-Service -Name "MSSQLSERVER"`
 
 ### Client
 
