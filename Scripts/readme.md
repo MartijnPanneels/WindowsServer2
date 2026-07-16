@@ -45,4 +45,6 @@ Om te controleren of de server goed is ingesteld kunnen volgende commandos worde
 5. Ga in Powershell naar `C:\Users\Public\shared_folder\Client` en voer `setupC-p2.ps1` uit.
 6. Open SQL Server Management Studio
 7. Vul de volgende gegevens in: Server type: Database Engine, Server name: server2.WS2-25-martijn.hogent, Authentication: Windows Authentication en klik Trust server certificate aan.
+8. Connectie is gemaakt
+9. Om de CA te controleren: `win + r` -> `certlm.msc` -> trusted root certification authorities -> certificates: je ziet WS2-25-martijn-CA staan.
 
