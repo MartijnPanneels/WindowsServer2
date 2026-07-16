@@ -29,7 +29,7 @@ Om te controleren of de server goed is ingesteld kunnen volgende commandos worde
 
 ### Server 2
 
-1. Start Server1: `vagrant up server2`.
+1. Start Server2: `vagrant up server2`.
 2. Voer op de VM `C:\vagrant\Server2\setupS2.ps1` uit.
 3. Na dit script is er een reboot vereist. Log na het uitvoeren van het eerste script in met de administrator: `ssh admin1@192.168.25.20` het wachtwoord is `Student2025!`
 4. Ga in de powershell env: `powershell`
@@ -38,4 +38,11 @@ Om te controleren of de server goed is ingesteld kunnen volgende commandos worde
 
 ### Client
 
-WS2-25-martijn\admin1
+1. Start client: `vagrant up client`.
+2. Log in: wachtwoord `vagrant`
+3. Voer op de VM `C:\vagrant\client\setupC.ps1` uit.
+4. Log in met:  `WS2-25-martijn\admin1` en wachtwoord `Student2025!`
+5. Ga in Powershell naar `C:\Users\Public\shared_folder\Client` en voer `setupC-p2.ps1` uit.
+6. Open SQL Server Management Studio
+7. Vul de volgende gegevens in: Server type: Database Engine, Server name: server2.WS2-25-martijn.hogent, Authentication: Windows Authentication en klik Trust server certificate aan.
+

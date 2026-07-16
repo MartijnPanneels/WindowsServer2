@@ -4,14 +4,11 @@ Write-Host "Configuring Internal Network Interface..."
 # We zoeken de tweede netwerkkaart (niet de NAT adapter)
 $InternalAdapter = Get-NetAdapter | Where-Object { $_.InterfaceAlias -ne "Ethernet" }
 
-# IP en DNS instellen
-$IPAddress = "192.168.25.30"
-$PrefixLength = 24
-$Gateway = "192.168.25.1" # Optioneel, afhankelijk van je routing vereisten
-$DNSServer = "192.168.25.10"
+# Schakel DHCP in voor het IP-adres
+Set-NetIPInterface -InterfaceAlias $InternalAdapter.InterfaceAlias -Dhcp Enabled
 
-New-NetIPAddress -InterfaceAlias $InternalAdapter.InterfaceAlias -IPAddress $IPAddress -PrefixLength $PrefixLength -DefaultGateway $Gateway -ErrorAction SilentlyContinue
-Set-DnsClientServerAddress -InterfaceAlias $InternalAdapter.InterfaceAlias -ServerAddresses $DNSServer
+# Zorg dat ook de DNS-servers automatisch via DHCP worden opgehaald
+Set-DnsClientServerAddress -InterfaceAlias $InternalAdapter.InterfaceAlias -ResetServerAddresses
 
 Write-Host "Network configuration complete. IP: $IPAddress, DNS: $DNSServer"
 
