@@ -80,4 +80,10 @@ Install-AdcsCertificationAuthority -CAType EnterpriseRootCa -CACommonName "WS2-2
 Install-AdcsWebEnrollment -Force
 
 Restart-Service certsvc
+
+Write-Host "Configuring IIS to allow HTTP for Web Enrollment..."
+Import-Module WebAdministration
+Set-WebConfigurationProperty -Filter 'system.webServer/security/access' -Location 'Default Web Site/CertSrv' -Name sslFlags -Value None
+iisreset
+
 Write-Host "Certificate Authority (CA) successfully installed and configured."
