@@ -2,6 +2,64 @@
 
 ## Deployment Guide
 
+### Directory structure
+
+```
+C:.
+│   readme.md
+│   readme.pdf
+│   Vagrantfile
+│
+├───.vagrant
+│   ├───...
+
+│
+├───Client
+│       setupC-p2.ps1
+│       setupC.ps1
+│       valideerC.ps1
+│
+├───ISO
+│       enu_sql_server_2022_standard_edition_x64_dvd_43079f69.iso
+│
+├───Server1
+│       setupS1-p2.ps1
+│       setupS1.ps1
+│       valideerS1.ps1
+│
+├───Server2
+│       setupS2-p2.ps1
+│       setupS2.ps1
+│       valideerS2.ps1
+│
+└───sql
+        sql_config.ini
+        SSMS-Setup-ENU.exe
+```
+
+### sql_config.ini
+
+```
+[OPTIONS]
+ACTION="Install"
+FEATURES=SQLENGINE
+INSTANCENAME="MSSQLSERVER"
+INSTANCEID="MSSQLSERVER"
+SQLSVCACCOUNT="NT AUTHORITY\SYSTEM"
+SQLSYSADMINACCOUNTS="WS2-25-martijn\Domain Admins"
+AGTSVCACCOUNT="NT AUTHORITY\SYSTEM"
+SQLSVCSTARTUPTYPE="Automatic"
+SECURITYMODE=SQL
+SAPWD="Secure!Passw0rd"
+TCPENABLED=1
+BROWSERSVCSTARTUPTYPE="Automatic"
+IACCEPTSQLSERVERLICENSETERMS="True"
+QUIET="True"
+ENU="True"
+UpdateEnabled="False"
+USEMICROSOFTUPDATE="False"
+```
+
 ### Credentials
 
 | Naam           | Gebruikersnaam  | Wachtwoord     | Groep                   | OU     |
@@ -18,7 +76,7 @@
 2. Voer op de VM `C:\vagrant\Server1\setupS1.ps1` uit.
 3. Na dit script is er een reboot vereist. Log na het uitvoeren van het eerste script in met de administrator: `ssh administrator@192.168.25.10` het wachtwoord is `vagrant`
 4. Ga in de powershell env: `powershell`
-5. Navigeer naar `C:\vagrant\Server1\setupS1-p2.ps1` en voer dit script uit.
+5. Navigeer naar `C:\Users\Public\shared_folder\Server1\setupS1-p2.ps1` en voer dit script uit.
 6. Om te valideren of server1 alle functionaliteiten heeft kan je het `C:\vagrant\Server1\valideerS1.ps1` uit voeren en de output bekijken.
 
 ### Server 2

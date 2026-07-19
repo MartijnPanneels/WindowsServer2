@@ -3,7 +3,7 @@ Add-DnsServerSecondaryZone -Name "WS2-25-martijn.hogent" -ZoneFile "WS2-25-marti
 Add-DnsServerSecondaryZone -Name "25.168.192.in-addr.arpa" -ZoneFile "25.168.192.in-addr.arpa.dns" -MasterServers "192.168.25.10" -ErrorAction SilentlyContinue
 
 $sqlSetupPath = "D:\setup.exe"
-$sqlConfigFile = "C:\vagrant\sql\sql_config.ini"
+$sqlConfigFile = "C:\Users\Public\shared_folder\sql\sql_config.ini"
 $odbcPath = "C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\"
 
 Write-Host "Installeer SQL server"
@@ -41,5 +41,6 @@ New-NetFirewallRule -DisplayName "SQL Server TCP 1433" -Direction Inbound -Proto
 netsh advfirewall firewall add rule name="SQL Browser UDP 1434" dir=in action=allow protocol=UDP localport=1434
 Write-Host "Configureer firewall voltooid"
 
-
 Write-Host "Installeer SQL server voltooid"
+
+Restart-Service -Name "MSSQLSERVER" -Force

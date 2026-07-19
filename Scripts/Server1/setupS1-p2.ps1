@@ -41,6 +41,7 @@ $ZoneName = "25.168.192.in-addr.arpa"
 
 Add-DnsServerPrimaryZone -NetworkId $NetworkId -ReplicationScope "Domain" -ErrorAction SilentlyContinue
 Add-DnsServerResourceRecordPtr -ZoneName $ZoneName -Name "10" -PtrDomainName "server1.$DomainName" -AllowUpdateAny -ErrorAction SilentlyContinue
+Add-DnsServerResourceRecordA -Name "server2" -ZoneName $DomainName -IPv4Address "192.168.25.20" -CreatePtr -ErrorAction SilentlyContinue
 Set-DnsServerPrimaryZone -Name $DomainName -SecureSecondaries TransferToSecureServers -SecondaryServers "192.168.25.20" -ErrorAction SilentlyContinue
 Set-DnsServerPrimaryZone -Name $ZoneName -SecureSecondaries TransferToSecureServers -SecondaryServers "192.168.25.20" -ErrorAction SilentlyContinue
 Write-Host "Configureer DNS Reverse Lookup Zone voltooid"
